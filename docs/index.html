@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HomeWorth | House price and area estimator</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%232f5d4e'/%3E%3Cpath d='M9 20.5 20 11l11 9.5' stroke='%23f5ebd3' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M13 19.5V30h14V19.5' fill='%23f5ebd3'/%3E%3Cpath d='M17.5 30v-6a2.5 2.5 0 0 1 5 0v6' fill='%232f5d4e'/%3E%3Ccircle cx='31' cy='11' r='4' fill='%23ebc96b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header><div class="wrap">
+<a class="logo" href="#top" aria-label="HomeWorth home">
+<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#2f5d4e"/><path d="M9 20.5 20 11l11 9.5" stroke="#f5ebd3" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 19.5V30h14V19.5" fill="#f5ebd3"/><path d="M17.5 30v-6a2.5 2.5 0 0 1 5 0v6" fill="#2f5d4e"/><circle cx="31" cy="11" r="4" fill="#ebc96b"/></svg>
+<span><b>HomeWorth</b><small>House price and area estimator</small></span></a>
+<nav><a href="#estimator">Estimator</a><a href="#about">About</a><a class="btn" href="#contact">Contact</a></nav>
+</div></header>
+
+<main class="wrap" id="estimator"><span id="top"></span>
+<section class="intro">
+<h1>Find out what a house is likely to cost</h1>
+<p>Tell us what the house has. Two Random Forest models trained on 2,000 house records predict its area in square feet and its price in rupees.</p>
+</section>
+
+<div class="est">
+<form class="panel" id="form" onsubmit="return false">
+<fieldset><legend>Size and layout</legend><div class="counts" id="counts"></div></fieldset>
+<fieldset><legend>What it has</legend><div id="yn"></div></fieldset>
+<fieldset><legend>Furnishing</legend><div id="furn"></div></fieldset>
+<div class="acts">
+<button type="button" class="primary" id="go">Estimate area and price</button>
+<button type="button" class="link" id="sample">Load a sample house</button>
+</div>
+</form>
+
+<section class="result" id="sheet" aria-live="polite">
+<div class="draw" id="draw"></div>
+<div class="body">
+<div class="top">
+<div><span class="k">Predicted price</span><b class="price" id="r-price">–</b><span class="sub" id="r-sub">Press estimate to see the price</span></div>
+<span class="chip cat" id="r-cat">Not estimated</span>
+</div>
+<div class="stats" id="stats"></div>
+<div class="chips" id="chips"></div>
+<div class="bar"><i></i><i></i><i></i><div class="pin" hidden></div></div>
+<div class="lab"><span>Small, under 1,000 sq.ft</span><span>Medium, under 2,000</span><span>Large, 2,000 and above</span></div>
+</div>
+<div class="note" id="note">Set the details on the left, then estimate. The drawing follows your choices.</div>
+</section>
+</div>
+</main>
+
+<section class="about" id="about"><div class="wrap"><div>
+<section>
+<h2>About the model</h2>
+<p>Area is not something you enter. A separate model predicts it from the other features, the same way the price model does.</p>
+<dl>
+<dt>Data</dt><dd>2,000 house records: 1,600 for training and 400 for testing.</dd>
+<dt>Inputs</dt><dd>Bedrooms, bathrooms, stories, parking, six yes/no features and furnishing status.</dd>
+<dt>Models</dt><dd>Two Random Forest regressors with 100 trees each, one for price and one for area.</dd>
+<dt>Category</dt><dd>Under 1,000 sq.ft is small, under 2,000 is medium, larger is large.</dd>
+</dl>
+</section>
+<aside class="contact" id="contact">
+<h3>Questions or feedback?</h3>
+<p>Write to me about the project, the model or how it was built.</p>
+<a href="mailto:aakankshamore22004@gmail.com">aakankshamore22004@gmail.com</a>
+</aside>
+</div></div></section>
+
+<footer><div class="wrap">Estimates come from a model trained on a single dataset. Treat them as indicative, not as a valuation.</div></footer>
+
+<script src="js/config.js"></script>
+<script src="js/drawing.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
