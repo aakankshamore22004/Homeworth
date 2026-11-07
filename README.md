@@ -1,5 +1,10 @@
 # 🏠 HomeWorth — House Price & Area Estimator
 
+![MIT License](https://img.shields.io/badge/License-MIT-green.svg)
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
+![Flask](https://img.shields.io/badge/Flask-3.1-lightgrey)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6-orange)
+
 > Predict a house's **area (sq.ft)** and **price (₹)** from its features using two Random Forest models trained on 2,000 real housing records.
 
 ---
@@ -26,8 +31,8 @@ house-price-project/
 │   ├── css/
 │   │   └── style.css          # All styles
 │   └── js/
-│       ├── config.js          # API endpoint configuration
-│       ├── drawing.js         # Live house illustration (SVG/Canvas)
+│       ├── config.js          # API endpoint configuration ← change this for deployment
+│       ├── drawing.js         # Live house illustration
 │       └── app.js             # Form logic, API calls, results
 │
 ├── backend/                   # Python Flask API
@@ -35,11 +40,12 @@ house-price-project/
 │   ├── train_model.py         # Trains & saves the ML models
 │   ├── requirements.txt       # Python dependencies
 │   ├── models/                # Trained model files (generated — not in git)
-│   │   ├── price_model.pkl
-│   │   └── area_model.pkl
+│   │   └── README.txt
 │   └── data/                  # Dataset (not in git — add your own CSV)
-│       └── Housing_Prices_Dataset_2000_Records.csv
+│       └── README.txt
 │
+├── render.yaml                # One-click Render deployment config
+├── LICENSE                    # MIT License
 ├── .gitignore
 └── README.md
 ```
@@ -47,10 +53,6 @@ house-price-project/
 ---
 
 ## 🚀 Run Locally
-
-### Prerequisites
-- Python 3.9+
-- pip
 
 ### Steps
 
@@ -81,7 +83,6 @@ airconditioning, parking, prefarea, furnishingstatus
 ```bash
 python train_model.py
 ```
-This generates `backend/models/price_model.pkl` and `backend/models/area_model.pkl`.
 
 **5. Start the server**
 ```bash
@@ -95,16 +96,46 @@ http://127.0.0.1:5000
 
 ---
 
-## 🌐 Deploy Online
+## ☁️ Deploy Online
 
-### Backend (Render / PythonAnywhere)
-- Upload the `backend/` folder
-- Start command: `gunicorn app:app`
-- Match your local scikit-learn version: `pip show scikit-learn`
+### Step 1 — Deploy Backend on Render (Free)
 
-### Frontend (GitHub Pages)
-- Set `API_URL` in `frontend/js/config.js` to your deployed backend URL
-- Publish `frontend/` via GitHub Pages (root or `docs/` folder)
+1. Go to **[render.com](https://render.com)** → Sign up / Log in with GitHub
+2. Click **"New +"** → **"Web Service"**
+3. Connect your **GitHub repo** → select `Homeworth`
+4. Render auto-detects `render.yaml` — it will configure everything automatically
+5. Add an **Environment Variable** on the Render dashboard:
+   - Key: `DATASET_URL` (optional — only if you host your CSV somewhere)
+6. Click **"Deploy"** — wait ~3 minutes
+7. Your backend URL will be: `https://homeworth-api.onrender.com`
+
+> ⚠️ **Important:** The dataset CSV is not in git (gitignored). You must either:
+> - Add a build step to download it, **OR**
+> - Upload it manually in Render's shell: `render shell` → place CSV in `backend/data/`
+
+### Step 2 — Update Frontend Config
+
+Edit `frontend/js/config.js` and replace the local URL with your Render URL:
+
+```js
+// Change this line:
+const API_URL = "http://127.0.0.1:5000/predict";
+
+// To your Render URL:
+const API_URL = "https://homeworth-api.onrender.com/predict";
+```
+
+### Step 3 — Deploy Frontend on GitHub Pages
+
+1. Go to your repo on GitHub → **Settings** → **Pages**
+2. Under **"Source"** → select branch `main`, folder `/frontend`
+3. Click **Save**
+4. Your site will be live at:
+   ```
+   https://aakankshamore22004.github.io/Homeworth/
+   ```
+
+> GitHub Pages takes 1–2 minutes to go live after the first deploy.
 
 ---
 
@@ -123,6 +154,12 @@ http://127.0.0.1:5000
 | Air conditioning | Yes / No |
 | Preferred area | Yes / No |
 | Furnishing status | Furnished / Semi / Unfurnished |
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
