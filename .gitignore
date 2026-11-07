@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
+.ipynb_checkpoints/
+
+# Trained model files (regenerate with train_model.py)
+backend/models/*.pkl
+
+# Dataset (add your own CSV to backend/data/)
+backend/data/*.csv
+
+# macOS
+.DS_Store
