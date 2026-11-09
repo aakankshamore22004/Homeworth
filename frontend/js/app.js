@@ -49,9 +49,18 @@ function payload(s){return{bedrooms:s.bedrooms,bathrooms:s.bathrooms,stories:s.s
 async function estimate(){
  const p=payload(S);
  if(API_URL){
-  const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)});
-  if(!r.ok)throw new Error("HTTP "+r.status);
-  const d=await r.json();return{area:+d.area,price:+d.price,src:"model"};
+  try{
+   const ctrl=new AbortController();
+   const timer=setTimeout(()=>ctrl.abort(),7000);
+   const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p),signal:ctrl.signal});
+   clearTimeout(timer);
+   if(r.ok){
+    const d=await r.json();
+    return{area:+d.area,price:+d.price,src:"model"};
+   }
+  }catch(err){
+   console.warn("Backend at "+API_URL+" unreachable, using formula preview:", err);
+  }
  }
  // Real output copied from the notebook run for the sample house.
  if(JSON.stringify(p)===JSON.stringify(payload(SAMPLE)))return{area:1936.16,price:270305.13,src:"notebook"};
@@ -75,7 +84,11 @@ function show(r){
  cat.textContent=["Small house","Medium house","Large house"][c];cat.className="chip cat s"+c;
  document.querySelectorAll(".bar i").forEach((e,i)=>e.classList.toggle("on",i===c));
  const pin=$(".pin");pin.hidden=false;pin.style.left=Math.min(100,r.area/3000*100)+"%";
- $("#note").textContent={model:"Estimated by the trained Random Forest models.",notebook:"These are the exact values from the notebook run for this sample house.",preview:"Placeholder estimate. The trained models are not connected yet, so these figures are not real predictions."}[r.src];
+ $("#note").textContent={
+  model:"Estimated by the trained Random Forest models.",
+  notebook:"These are the exact values from the notebook run for this sample house.",
+  preview: API_URL ? "Preview estimate. (Live backend at "+API_URL+" is waking up or not yet connected. Showing formula estimate)." : "Placeholder estimate. The trained models are not connected yet, so these figures are not real predictions."
+ }[r.src];
  $("#note").className="note"+(r.src==="preview"?" warn":"");
 }
 $("#go").onclick=async()=>{
