@@ -23,12 +23,18 @@ FEATURES = [
 def load_model(name):
     path = BASE / "models" / name
     if not path.exists():
-        raise SystemExit(
-            f"Missing {path}. Copy your .pkl files into backend/models/ "
-            "or run  python train_model.py  first."
-        )
-    with open(path, "rb") as f:
-        return pickle.load(f)
+        print(f"Missing {path}. Training models automatically now...")
+        from train_model import train_and_save
+        train_and_save()
+    try:
+        with open(path, "rb") as f:
+            return pickle.load(f)
+    except Exception as e:
+        print(f"Error loading {path}: {e}. Retraining...")
+        from train_model import train_and_save
+        train_and_save()
+        with open(path, "rb") as f:
+            return pickle.load(f)
 
 
 price_model = load_model("price_model.pkl")
